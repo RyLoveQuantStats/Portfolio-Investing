@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pandas_datareader.data as web
 from datetime import datetime
+from config import Start_Date, End_Date
 
 def get_bond_portfolio(start_date, end_date, T=0.25, plot_results=True):
     """
@@ -119,8 +120,8 @@ def get_bond_portfolio(start_date, end_date, T=0.25, plot_results=True):
 
 # Allow this module to run standalone for testing.
 if __name__ == "__main__":
-    start_date = '2020-01-01'
-    end_date = '2024-12-31'
+    start_date = Start_Date
+    end_date = End_Date
     expected_returns_quarterly, overall_expected_return = get_bond_portfolio(start_date, end_date, T=0.25, plot_results=True)
     
     print("\nOverall Expected Annual Return (average across bonds and quarters): {:.2f}%".format(overall_expected_return * 100))

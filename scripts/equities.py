@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
+from config import Start_Date, End_Date
 
 def get_equity_portfolio(start_date, end_date, risk_free_rate=0.02, plot_frontier=False):
     """
@@ -168,8 +169,8 @@ def get_equity_portfolio(start_date, end_date, risk_free_rate=0.02, plot_frontie
 
 # Allow the module to run standalone for testing.
 if __name__ == "__main__":
-    start_date = '2020-01-01'
-    end_date = '2024-12-31'
+    start_date = Start_Date
+    end_date = End_Date
     risk_free_rate = 0.02
     
     eq_qtr, eq_cum, eq_exp_return = get_equity_portfolio(start_date, end_date, risk_free_rate, plot_frontier=False)
