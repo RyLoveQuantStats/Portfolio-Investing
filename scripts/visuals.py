@@ -79,8 +79,7 @@ def plot_cumulative_returns(strategy_dict):
     plt.ylabel("Normalized Value (Base = 1.0)")
     plt.legend(loc="best")
     plt.grid(True)
-    plt.savefig("cumulative_returns.png")
-    plt.show()
+    plt.savefig("output/cumulative_returns.png")
 
 def plot_daily_return_histograms(daily_returns_dict):
     """Plot histograms for daily returns for each strategy, filtering out non-finite values."""
@@ -97,8 +96,7 @@ def plot_daily_return_histograms(daily_returns_dict):
         plt.xlabel("Return")
         plt.ylabel("Frequency")
     plt.tight_layout()
-    plt.savefig("daily_return_histograms.png")
-    plt.show()
+    plt.savefig("output/daily_return_histograms.png")
 
 def plot_drawdown_curves(strategy_dict):
     plt.figure(figsize=(12, 7))
@@ -111,8 +109,7 @@ def plot_drawdown_curves(strategy_dict):
     plt.ylabel("Drawdown")
     plt.legend(loc="best")
     plt.grid(True)
-    plt.savefig("drawdown_curves.png")
-    plt.show()
+    plt.savefig("output/drawdown_curves.png")
 
 def plot_rolling_metrics(series, window=60):
     daily_ret = series.pct_change().dropna()
@@ -130,8 +127,7 @@ def plot_rolling_metrics(series, window=60):
     ax2.tick_params(axis="y", labelcolor="red")
     plt.title(f"Rolling {window}-Day Volatility & Sharpe Ratio (Combined Portfolio)")
     fig.legend(loc="upper right", bbox_to_anchor=(1,1))
-    plt.savefig("rolling_metrics.png")
-    plt.show()
+    plt.savefig("output/rolling_metrics.png")
 
 def plot_correlation_heatmap(daily_returns_dict):
     data = {}
@@ -142,8 +138,7 @@ def plot_correlation_heatmap(daily_returns_dict):
     plt.figure(figsize=(8, 6))
     sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", vmin=-1, vmax=1)
     plt.title("Correlation Heatmap of Daily Returns")
-    plt.savefig("correlation_heatmap.png")
-    plt.show()
+    plt.savefig("output/correlation_heatmap.png")
 
 def plot_bootstrap_histograms(bootstrap_df):
     plt.figure(figsize=(14, 8))
@@ -155,8 +150,7 @@ def plot_bootstrap_histograms(bootstrap_df):
         plt.xlabel(met)
         plt.ylabel("Frequency")
     plt.tight_layout()
-    plt.savefig("bootstrap_histograms.png")
-    plt.show()
+    plt.savefig("output/bootstrap_histograms.png")
 
 def plot_sector_weights(sector_weights):
     plt.figure(figsize=(10, 6))
@@ -165,8 +159,7 @@ def plot_sector_weights(sector_weights):
     plt.xlabel("ETF")
     plt.ylabel("Weight")
     plt.grid(True)
-    plt.savefig("sector_weights.png")
-    plt.show()
+    plt.savefig("output/sector_weights.png")
 
 # --- Generate Visualizations ---
 print("Generating visualizations...")
