@@ -5,6 +5,7 @@ Directory structure:
         ├── bonds.py
         ├── config.py
         ├── equities.py
+        ├── options.py
         ├── portfolio.py
         └── __pycache__/
 
@@ -61,81 +62,73 @@ def get_bond_portfolio(start_date, end_date, T=0.25, plot_results=True):
     yields_df = yields_df.dropna()
     yields_df.columns = ['2Y', '5Y', '10Y', '20Y', '30Y']
     
-    # -------------------------------------------------
-    # 2. RESAMPLE THE DATA TO A QUARTERLY SNAPSHOT
-    # -------------------------------------------------
-    # We'll use the last available observation in each quarter.
+    # -------------------------
+    # 2. RESAMPLE THE DATA (unchanged)
     quarterly_yields = yields_df.resample('Q').last()
-    
-    # -------------------------------------------------
-    # 3. DEFINE THE ROLL-DOWN EXPECTED RETURN MODEL
-    # -------------------------------------------------
-    # The holding period T is 0.25 years by default.
-    # For a zero-coupon bond with current yield y and maturity M, if held for T years,
-    # its new yield y_new is determined by linearly interpolating the yield curve at (M - T).
+
+    # -------------------------
+    # 3. DEFINE ROLL-DOWN MODEL (unchanged)
     def compute_expected_return(maturity, current_yield, maturities, yield_curve, T):
-        """
-        Calculate the expected annualized return for a bond with a given maturity.
-        
-        Parameters:
-            maturity (float): The bond's current maturity (in years).
-            current_yield (float): The current yield (as decimal) at that maturity.
-            maturities (np.array): Array of benchmark maturities (e.g., [2, 5, 10, 20, 30]).
-            yield_curve (np.array): Array of yields (as decimals) corresponding to the maturities.
-            T (float): The holding period in years (e.g., 0.25 for quarterly).
-        
-        Returns:
-            float: The approximated expected annualized return.
-        """
         new_maturity = maturity - T
-        # For values below the minimum available maturity, use the 2Y yield.
         y_new = np.interp(new_maturity, maturities, yield_curve, left=yield_curve[0], right=yield_curve[-1])
         return (current_yield * maturity - y_new * (maturity - T)) / T
-    
-    # Define maturities corresponding to the yield series.
+
     maturities = np.array([2, 5, 10, 20, 30], dtype=float)
-    
-    # -------------------------------------------------
-    # 4. COMPUTE EXPECTED RETURNS FOR EACH QUARTER AND BOND
-    # -------------------------------------------------
-    # Prepare a DataFrame to store the computed expected returns.
+
+    # -------------------------
+    # 4. COMPUTE EXPECTED RETURNS FOR EACH QUARTER
     expected_returns_quarterly = pd.DataFrame(index=quarterly_yields.index,
-                                              columns=['2Y','5Y','10Y','20Y','30Y'])
-    
-    # Loop over each quarter.
+                                            columns=['2Y','5Y','10Y','20Y','30Y'])
+
     for date, row in quarterly_yields.iterrows():
-        # Retrieve the yield curve for this quarter and convert from percentage to decimal.
-        yield_curve = np.array([row['2Y'], row['5Y'], row['10Y'], row['20Y'], row['30Y']], dtype=float) / 100.0
+        yield_curve = np.array([row['2Y'], row['5Y'], row['10Y'], row['20Y'], row['30Y']],
+                            dtype=float) / 100.0
         for i, mat in enumerate(maturities):
             exp_ret = compute_expected_return(mat, yield_curve[i], maturities, yield_curve, T)
             expected_returns_quarterly.loc[date, f'{int(mat)}Y'] = exp_ret
-    
-    # Convert expected returns to numeric format.
+
     expected_returns_quarterly = expected_returns_quarterly.astype(float)
-    
-    # Print the quarterly expected returns.
+
     print("Quarterly Expected Annualized Returns (based on roll-down valuation):")
     print(expected_returns_quarterly)
-    
-    # -------------------------------------------------
-    # 5. VISUALIZATION
-    # -------------------------------------------------
+
+    # -------------------------
+    # 5. VISUALIZATION (unchanged)
     if plot_results:
         plt.figure(figsize=(10, 6))
         for col in expected_returns_quarterly.columns:
             plt.plot(expected_returns_quarterly.index, expected_returns_quarterly[col],
-                     marker='o', linestyle='-', label=f'{col} Bond')
+                    marker='o', linestyle='-', label=f'{col} Bond')
         plt.xlabel('Quarter')
         plt.ylabel('Expected Annualized Return')
         plt.title('Quarterly Expected Annualized Returns by Bond Maturity')
         plt.legend()
         plt.show()
-    
-    # Compute an overall expected annual return as the simple average across all bonds and quarters.
+
+    # Compute overall expected annual return (simple average).
     overall_expected_return = expected_returns_quarterly.mean().mean()
-    
+
+    # --------------------------------------------------
+    # NEW LOGIC: If the overall expected return is not profitable,
+    # we assume bonds are not attractive and therefore the strategy remains in cash.
+    if overall_expected_return <= 0:
+        print("Bonds expected returns not profitable. Remaining in cash.")
+        # Override all the expected return data to zero, reflecting a cash allocation.
+        expected_returns_quarterly[:] = 0.0
+        overall_expected_return = 0.0
+
     return expected_returns_quarterly, overall_expected_return
 
+    # --------------------------------------------------
+    # NEW LOGIC: If the overall expected return is not profitable,
+    # we assume bonds are not attractive and therefore the strategy remains in cash.
+    if overall_expected_return <= 0:
+        print("Bonds expected returns not profitable. Remaining in cash.")
+        # Override all the expected return data to zero, reflecting a cash allocation.
+        expected_returns_quarterly[:] = 0.0
+        overall_expected_return = 0.0
+
+    return expected_returns_quarterly, overall_expected_return
 
 # Allow this module to run standalone for testing.
 if __name__ == "__main__":
@@ -349,149 +342,14 @@ if __name__ == "__main__":
 
 
 ================================================
+File: scripts/options.py
+================================================
+
+
+
+================================================
 File: scripts/portfolio.py
 ================================================
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import yfinance as yf
-
-# Import our portfolio functions from equities.py and bonds.py.
-from equities import get_equity_portfolio
-from bonds import get_bond_portfolio
-from config import Start_Date, End_Date
-# ======================================================
-# 1. Set analysis parameters
-# ======================================================
-risk_free_rate = 0.02   # Annual risk-free rate
-
-# For testing, set allocation weights so that the combined returns should match one asset exactly.
-equity_weight = 0.7  
-bond_weight = 0.3  
-
-# ======================================================
-# 2. Build the individual sub-portfolios (Quarterly)
-# ======================================================
-
-# Equity Portfolio: quarterly rebalanced returns
-eq_quarterly_returns, eq_cum_returns, equity_expected_return = get_equity_portfolio(
-    Start_Date, End_Date, risk_free_rate, plot_frontier=True
-)
-
-# Ensure the indices are datetime objects.
-eq_quarterly_returns.index = pd.to_datetime(eq_quarterly_returns.index)
-eq_cum_returns.index = pd.to_datetime(eq_cum_returns.index)
-
-# Adjust the equity index to quarter-end (subtract one day from the next quarter's start).
-eq_quarterly_returns.index = eq_quarterly_returns.index - pd.Timedelta(days=1)
-eq_cum_returns.index = eq_cum_returns.index - pd.Timedelta(days=1)
-
-# Bond Portfolio:
-bond_expected_df, bond_expected_return = get_bond_portfolio(Start_Date, End_Date, T=0.25, plot_results=False)
-bond_price = yf.download('TLT', start=Start_Date, end=End_Date, auto_adjust=True)['Close'].dropna()
-# Resample TLT to quarter-end dates using 'QE' then compute quarterly returns.
-bond_quarterly_returns = bond_price.resample('QE').last().pct_change().dropna()
-bond_quarterly_returns.index = pd.to_datetime(bond_quarterly_returns.index)
-
-# If bond_quarterly_returns is a DataFrame with one column, convert it to a Series.
-if isinstance(bond_quarterly_returns, pd.DataFrame) and bond_quarterly_returns.shape[1] == 1:
-    bond_quarterly_returns = bond_quarterly_returns.iloc[:, 0]
-
-bond_cum_returns = (1 + bond_quarterly_returns).cumprod()
-
-# ======================================================
-# 3. Combine sub-portfolios into a Combined Portfolio (Quarterly)
-# ======================================================
-
-# Define common quarter-end dates from both series.
-common_dates = eq_quarterly_returns.index.intersection(bond_quarterly_returns.index)
-print("Common Dates (Quarter-End):")
-print(common_dates)
-
-# Use .loc[â€¦] to extract only those common dates (without fill_value, to avoid introducing zeros).
-eq_qtr = eq_quarterly_returns.loc[common_dates]
-bond_qtr = bond_quarterly_returns.loc[common_dates]
-
-# --- Debug: Inspect the aligned quarterly returns.
-print("\nEquity Quarterly Returns (Aligned):")
-print(eq_qtr)
-print("\nBond Quarterly Returns (Aligned):")
-print(bond_qtr)
-
-# Compute the combined quarterly returns.
-combined_qtr_returns = equity_weight * eq_qtr + bond_weight * bond_qtr
-print("\nCombined Quarterly Returns (should equal Equity Quarterly Returns when weights are 1.0 and 0.0):")
-print(combined_qtr_returns)
-
-# Compute cumulative returns for the combined portfolio.
-combined_cum_returns = (1 + combined_qtr_returns).cumprod()
-
-# For a direct comparison, align the equity cumulative returns to the same common dates:
-eq_cum_returns_aligned = eq_cum_returns.loc[common_dates]
-print("\nEquity Cumulative Returns (Aligned):")
-print(eq_cum_returns_aligned)
-print("\nCombined Cumulative Returns (Should match Equity Cumulative Returns):")
-print(combined_cum_returns)
-
-# ======================================================
-# 4. Benchmark: SPY Quarterly Returns
-# ======================================================
-spy_price = yf.download('SPY', start=Start_Date, end=End_Date, auto_adjust=True)['Close'].dropna()
-# Resample SPY to quarter-end dates using 'QE' then compute quarterly returns.
-spy_qtr_returns = spy_price.resample('QE').last().pct_change().dropna()
-spy_qtr_returns.index = pd.to_datetime(spy_qtr_returns.index)
-spy_cum_returns = (1 + spy_qtr_returns).cumprod()
-
-# ======================================================
-# 5. Display Overall Portfolio Performance & Risk Metrics
-# ======================================================
-print("\nPerformance Metrics:")
-print("Equity Portfolio Expected Annual Return: {:.2f}%".format(equity_expected_return * 100))
-print("Bond Portfolio Expected Annual Return: {:.2f}%".format(bond_expected_return * 100))
-combined_expected_return = equity_weight * equity_expected_return + bond_weight * bond_expected_return
-print("Combined Portfolio Expected Annual Return: {:.2f}%".format(combined_expected_return * 100))
-
-# Annualized volatility (using quarterly returns, multiply by sqrt(4)).
-combined_volatility = combined_qtr_returns.std() * np.sqrt(4)
-print("Combined Portfolio Annualized Volatility: {:.2f}%".format(combined_volatility * 100))
-
-# ======================================================
-# 6. Plot Performance (Cumulative Returns)
-# ======================================================
-
-# Align the bond cumulative returns to the common dates.
-# (Assuming bond_cum_returns was computed on bond_quarterly_returns before intersection.)
-bond_cum_returns_aligned = bond_cum_returns.loc[common_dates]
-
-# Create a new figure for the cumulative returns plot.
-plt.figure(figsize=(12, 6))
-
-# Plot the equity portfolio cumulative returns.
-plt.plot(eq_cum_returns_aligned.index, eq_cum_returns_aligned.values,
-         label="Equity Portfolio", marker="o")
-
-# Plot the bond portfolio cumulative returns.
-plt.plot(bond_cum_returns_aligned.index, bond_cum_returns_aligned.values,
-         label="Bond Portfolio", marker="o")
-
-# Plot the combined portfolio cumulative returns.
-plt.plot(combined_cum_returns.index, combined_cum_returns.values,
-         label="Actual Portfolio", marker="o")
-
-# Plot the benchmark (SPY) cumulative returns.
-plt.plot(spy_cum_returns.index, spy_cum_returns.values,
-         label="Benchmark (SPY)", marker="o")
-
-# Labeling the plot.
-plt.title("Cumulative Returns Comparison")
-plt.xlabel("Date")
-plt.ylabel("Cumulative Return")
-plt.legend()
-plt.grid(True)
-plt.savefig("cumulative_returns_comparison.png", dpi=300, bbox_inches='tight')
-
-# Display the plot.
-plt.show()
 
 
 
