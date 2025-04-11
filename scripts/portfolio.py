@@ -395,7 +395,8 @@ if __name__ == "__main__":
     
     # --- Optimization ---
     # Use differential evolution to optimize the covered call parameters (and dynamic weight allocation parameters)
-    '''result = opt.differential_evolution(objective, bounds, args=(price_data,), maxiter=50, tol=0.01, disp=True)
+    '''
+    result = opt.differential_evolution(objective, bounds, args=(price_data,), maxiter=50, tol=0.01, disp=True)
     print("\nOptimized Parameters:")
     print("target_delta:", result.x[0])
     print("threshold_vol_option:", result.x[1])
