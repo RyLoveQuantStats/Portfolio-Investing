@@ -17,15 +17,15 @@ transaction_cost = 0.001     # 0.1% per trade cost
 
 # Parameters for covered call enhancements:
 # (When using delta-targeting, the target delta is our key input)
-target_delta = 0.30          # Sell a call option with delta around 0.30
-threshold_vol_option = 0.15  # If annual volatility <15%, extend option term
-short_option_term = 30       # Option term (days) in high volatility periods
-long_option_term = 45        # Option term (days) in low volatility periods
+target_delta = 0.50          # Sell a call option with delta around 0.30
+threshold_vol_option = 0.22  # If annual volatility <15%, extend option term
+short_option_term = 60       # Option term (days) in high volatility periods
+long_option_term = 90        # Option term (days) in low volatility periods
 
 # Dynamic weight allocation parameters (for combined portfolio)
 high_equity_weight = 0.70
-low_equity_weight = 0.40
-vol_threshold = 0.20         # If SPY volatility exceeds 20% annual, lower equity weight
+low_equity_weight = 0.30
+vol_threshold = 0.30         # If SPY volatility exceeds 20% annual, lower equity weight
 
 # Same ETF list and market benchmark
 etf_list = ['XLY', 'XLP', 'XLE', 'XLF', 'XLV',
