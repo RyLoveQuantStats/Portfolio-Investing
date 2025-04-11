@@ -14,7 +14,7 @@ risk_free_rate = 0.02   # Annual risk-free rate
 
 # For testing, set allocation weights so that the combined returns should match one asset exactly.
 equity_weight = 0.7  
-bond_weight = 0.3    
+bond_weight = 0.3  
 
 # ======================================================
 # 2. Build the individual sub-portfolios (Quarterly)
@@ -105,17 +105,37 @@ print("Combined Portfolio Annualized Volatility: {:.2f}%".format(combined_volati
 # ======================================================
 # 6. Plot Performance (Cumulative Returns)
 # ======================================================
-plt.figure(figsize=(12, 8))
-plt.plot(eq_cum_returns.index, eq_cum_returns, label='Equity Portfolio', linewidth=2)
-plt.plot(bond_cum_returns.index, bond_cum_returns, label='Bond Portfolio', linewidth=2)
-plt.plot(combined_cum_returns.index, combined_cum_returns, label='Combined Portfolio', linewidth=2, linestyle='--')
-plt.plot(spy_cum_returns.index, spy_cum_returns, label='Benchmark (SPY)', linewidth=2, linestyle=':')
-plt.xlabel('Date')
-plt.ylabel('Cumulative Return')
-plt.title('Combined Portfolio Backtest (Quarterly Rebalancing)')
+
+# Align the bond cumulative returns to the common dates.
+# (Assuming bond_cum_returns was computed on bond_quarterly_returns before intersection.)
+bond_cum_returns_aligned = bond_cum_returns.loc[common_dates]
+
+# Create a new figure for the cumulative returns plot.
+plt.figure(figsize=(12, 6))
+
+# Plot the equity portfolio cumulative returns.
+plt.plot(eq_cum_returns_aligned.index, eq_cum_returns_aligned.values,
+         label="Equity Portfolio", marker="o")
+
+# Plot the bond portfolio cumulative returns.
+plt.plot(bond_cum_returns_aligned.index, bond_cum_returns_aligned.values,
+         label="Bond Portfolio", marker="o")
+
+# Plot the combined portfolio cumulative returns.
+plt.plot(combined_cum_returns.index, combined_cum_returns.values,
+         label="Actual Portfolio", marker="o")
+
+# Plot the benchmark (SPY) cumulative returns.
+plt.plot(spy_cum_returns.index, spy_cum_returns.values,
+         label="Benchmark (SPY)", marker="o")
+
+# Labeling the plot.
+plt.title("Cumulative Returns Comparison")
+plt.xlabel("Date")
+plt.ylabel("Cumulative Return")
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.savefig("cumulative_returns_comparison.png", dpi=300, bbox_inches='tight')
 
-# Optionally, save the plot.
-plt.savefig('combined_portfolio_backtest.png', dpi=300, bbox_inches='tight')
+# Display the plot.
+plt.show()
