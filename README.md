@@ -71,6 +71,8 @@ For each strategy, the following metrics are computed:
 - **Sharpe Ratio**
 - **Maximum Drawdown**
 
+[📥 Download portfolio_risk_metrics.xlsx](output/portfolio_risk_metrics.xlsx)
+
 A bootstrap sensitivity analysis is also performed to measure the robustness of these metrics.
 
 ### Optimization (Optional)
