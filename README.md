@@ -7,7 +7,7 @@ This project explores a range of portfolio investing strategies by simulating an
 - **Covered Call Strategy:** A simulation that sells options on sector ETFs with dynamic, volatility‐driven parameters based on the Black-Scholes model.
 - **Combined Portfolio Strategy:** A dynamic mix of the above approaches, weighted by market volatility.
 
-The simulations use historical financial data and produce risk metrics and visualizations to help in assessing performance. Techniques such as bootstrap sensitivity analysis and differential evolution optimization (available as commented code) are also included to further refine the strategies.
+The simulations use historical financial data and produce risk metrics and visualizations to help in assessing performance. Techniques such as bootstrap sensitivity analysis and differential evolution optimization are also included to further refine the strategies.
 
 ![Cumulative Returns](notebooks/output/cumulative_returns.png)
 
