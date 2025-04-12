@@ -73,8 +73,6 @@ For each strategy, the following metrics are computed:
 
 ## 📈 Portfolio Risk Metrics Summary
 
-## 📈 Portfolio Risk Metrics Summary
-
 | Strategy              | Cumulative Return (%) | Annualized Return (%) | Annualized Volatility (%) | Sharpe Ratio | Max Drawdown (%) |
 |-----------------------|------------------------|------------------------|----------------------------|--------------|------------------|
 | Equity Portfolio      | 116.55                 | 14.64                  | 24.71                      | 0.51         | -32.61           |
