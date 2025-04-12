@@ -31,7 +31,6 @@ The simulations use historical financial data and produce risk metrics and visua
 ### Running the Simulations
 
 - **Jupyter Notebook:**  
-  For an interactive experience and step-by-step analysis, open the notebook:
   
   jupyter notebook notebooks/Finance_Academy_Project.ipynb
 
