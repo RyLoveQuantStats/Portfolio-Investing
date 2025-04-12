@@ -71,7 +71,14 @@ For each strategy, the following metrics are computed:
 - **Sharpe Ratio**
 - **Maximum Drawdown**
 
-[📥 Download portfolio_risk_metrics.xlsx](output/portfolio_risk_metrics.xlsx)
+## 📈 Portfolio Risk Metrics Summary
+
+| Strategy              | Cumulative Return (%) | Annualized Return (%) | Sharpe Ratio |
+|-----------------------|------------------------|------------------------|---------------|
+| Equity Portfolio      | 116.55                 | 14.64                  | 0.51          |
+| Covered Call Strategy | 162.87                 | 18.64                  | 0.92          |
+| Combined Portfolio    | 134.06                 | 16.23                  | 0.67          |
+| SPY Buy & Hold        | 113.66                 | 14.37                  | 0.62          |
 
 A bootstrap sensitivity analysis is also performed to measure the robustness of these metrics.
 
