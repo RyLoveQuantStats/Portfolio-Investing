@@ -9,7 +9,7 @@ This project explores a range of portfolio investing strategies by simulating an
 
 The simulations use historical financial data and produce risk metrics and visualizations to help in assessing performance. Techniques such as bootstrap sensitivity analysis and differential evolution optimization (available as commented code) are also included to further refine the strategies.
 
-![alt text](image-1.png)
+![Cumulative Returns](output/cumulative_returns.png)
 
 ## Requirements
 
@@ -46,7 +46,7 @@ The project generates various plots including:
 - Bootstrap sensitivity distributions.
 - Sector weight distributions.
 
-![alt text](image-2.png)
+![Correlation Heatmap](output/correlation_heatmap.png)
 All generated images are saved in the `output/` subdirectory of the notebooks folder.
 
 ## Project Details
