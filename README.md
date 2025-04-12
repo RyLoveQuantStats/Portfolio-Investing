@@ -11,36 +11,15 @@ The simulations use historical financial data and produce risk metrics and visua
 
 ![alt text](image-1.png)
 
-
-## Directory Structure
-
-Portfolio Investing/
-├── notebooks/                                     # Notebooks for interactive analysis.
-│   ├── Finance_Academy_Project.ipynb              # Main Jupyter Notebook for simulations.
-│   ├── portfolio_risk_metrics.xlsx               # (Optional) Duplicate of risk metrics file.
-│   └── output/                                    # Visualizations and outputs from notebook runs.
-│       ├── cumulative_returns.png                # Cumulative returns plot.
-│       ├── daily_returns_histogram.png           # Daily returns histogram.
-│       ├── drawdown_curve.png                    # Drawdown curve plot.
-│       ├── rolling_volatility.png                # Rolling volatility plot.
-│       ├── rolling_sharpe_ratio.png              # Rolling Sharpe ratio plot.
-│       ├── correlation_heatmap.png               # Correlation heatmap.
-│       ├── bootstrap_sensitivity.png             # Bootstrap sensitivity distribution plot.    
-└── scripts/                                       # Primary execution scripts.
-    ├── portfolio.py                               # Main script for simulating strategies and computing risk metrics.
-    ├── visuals.py                                 # Script for generating and saving visualizations.
-
 ## Requirements
 
 - **Python 3.7+**
-
 
 ## Installation
 
 1. **Clone the repository:**
    
-   git clone <repository_url>
-   cd Portfolio Investing
+   git clone [<repository_url>](https://github.com/RyLoveQuantStats/Portfolio-Investing.git)
   
 2. **Install dependencies:**
 
@@ -51,30 +30,10 @@ Portfolio Investing/
 
 ### Running the Simulations
 
-- **Main Script:**  
-  To run the comprehensive portfolio simulations (equity, covered call, and combined strategies) and output risk metrics and visualizations, execute:
-  
-  python scripts/portfolio.py
-  
-  This will download historical data, run the simulations, and save several plots and an Excel file (`portfolio_risk_metrics.xlsx`) in the project’s output directory.
-
 - **Jupyter Notebook:**  
   For an interactive experience and step-by-step analysis, open the notebook:
   
   jupyter notebook notebooks/Finance_Academy_Project.ipynb
-  
-
-### Key Configurations
-
-The following parameters can be adjusted in the scripts to tailor the analysis:
-- **Time Period:**  
-  Set by `Start_Date` and `End_Date` (e.g., `"2019-06-01"` to `"2024-12-31"`).
-- **Risk-Free Rates:**  
-  Separate risk-free rates for equity (CAPM & Sharpe calculations) and options (Black-Scholes pricing).
-- **Option Parameters:**  
-  Configure shares per contract, transaction cost, target delta, option term lengths, and volatility thresholds.
-- **ETF List & Benchmark:**  
-  A list of sector ETFs (e.g., `['XLY', 'XLP', ...]`) and a benchmark (typically `SPY`) are used throughout the simulations.
 
 ### Visualizations and Outputs
 
@@ -87,14 +46,15 @@ The project generates various plots including:
 - Bootstrap sensitivity distributions.
 - Sector weight distributions.
 
-All generated images are saved in the `output/` subdirectories for both the notebooks and script executions.
+![alt text](image-2.png)
+All generated images are saved in the `output/` subdirectory of the notebooks folder.
 
 ## Project Details
 
 ### Simulation Components
 
 - **Equity Portfolio Simulation:**  
-  Uses historical price data and quarterly rebalancing strategies via CAPM, Monte Carlo simulation, and efficient frontier optimization (via PyPortfolioOpt).
+  Uses historical price data and quarterly rebalancing strategies via CAPM, Monte Carlo simulation, and efficient frontier optimization.
 
 - **Covered Call Strategy:**  
   Implements option selling using Black-Scholes pricing with dynamic strike selection, adjusting option terms based on current volatility.
@@ -116,23 +76,3 @@ A bootstrap sensitivity analysis is also performed to measure the robustness of 
 ### Optimization (Optional)
 
 There is code commented out in `scripts/portfolio.py` for optimization (via differential evolution) of strategy parameters. This can be enabled if parameter optimization is desired.
-
-## Contributing
-
-Contributions to improve the simulations, add new features, or enhance documentation are welcome. Please fork the repository and submit pull requests or open issues for discussion.
-
-## License
-
-*Include your license information here (e.g., MIT License, Apache 2.0, etc.)*
-
-## Acknowledgments
-
-- Credit to the developers and maintainers of libraries such as [yfinance](https://github.com/ranaroussi/yfinance), [PyPortfolioOpt](https://github.com/robertmartin8/PyPortfolioOpt), and other essential Python libraries.
-- Inspiration from finance research projects and academic resources.
-
-## Contact
-
-For questions or feedback, please contact:
-- **Your Name / Organization**
-- **Email:** [your.email@example.com]
-- **GitHub:** [https://github.com/yourusername](https://github.com/yourusername)
