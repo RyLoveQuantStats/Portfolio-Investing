@@ -73,15 +73,13 @@ For each strategy, the following metrics are computed:
 
 ## 📈 Portfolio Risk Metrics Summary
 
-| Strategy              | Cumulative Return (%) | Annualized Return (%) | Sharpe Ratio |
-|-----------------------|------------------------|------------------------|---------------|
-| Equity Portfolio      | 116.55                 | 14.64                  | 0.51          |
-| Covered Call Strategy | 162.87                 | 18.64                  | 0.92          |
-| Combined Portfolio    | 134.06                 | 16.23                  | 0.67          |
-| SPY Buy & Hold        | 113.66                 | 14.37                  | 0.62          |
+## 📈 Portfolio Risk Metrics Summary
+
+| Strategy              | Cumulative Return (%) | Annualized Return (%) | Annualized Volatility (%) | Sharpe Ratio | Max Drawdown (%) |
+|-----------------------|------------------------|------------------------|----------------------------|--------------|------------------|
+| Equity Portfolio      | 116.55                 | 14.64                  | 24.71                      | 0.51         | -32.61           |
+| Covered Call Strategy | 162.87                 | 18.64                  | 18.08                      | 0.92         | -20.61           |
+| Combined Portfolio    | 134.06                 | 16.23                  | 21.35                      | 0.67         | -28.97           |
+| SPY Buy & Hold        | 113.66                 | 14.37                  | 20.07                      | 0.62         | -33.72           |
 
 A bootstrap sensitivity analysis is also performed to measure the robustness of these metrics.
-
-### Optimization (Optional)
-
-There is code commented out in `scripts/portfolio.py` for optimization (via differential evolution) of strategy parameters. This can be enabled if parameter optimization is desired.
